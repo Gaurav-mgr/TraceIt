@@ -1,10 +1,11 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
-import { AlertTriangle, ArrowRight, BarChart3, Boxes, CalendarClock, CheckCircle2, LogIn, ScanLine, ShieldCheck } from 'lucide-react';
+import { ArrowRight, BarChart3, CheckCircle2, LogIn, PiggyBank, ReceiptText, ScanLine, ShieldCheck, TrendingUp } from 'lucide-react';
 import { route } from 'ziggy-js';
 
 import TraceItLogo from "../../../public/traceitLogo.png";
 import TraceItLogoColor from "../../../public/traceitLogoColor.png";
+import "../../css/app.css";
 
 
 type SharedProps = {
@@ -17,9 +18,9 @@ type SharedProps = {
 };
 
 const demoRows = [
-    { item: 'Milk cartons', batch: 'Dairy-18A', qty: 7, expiry: '2 days', status: 'Use first' },
-    { item: 'Coffee beans', batch: 'Arabica-44', qty: 3, expiry: '24 days', status: 'Low stock' },
-    { item: 'Rice bag', batch: 'Pantry-09', qty: 12, expiry: '91 days', status: 'Stable' },
+    { detail: 'Groceries', category: 'Grocery', amount: 'रु 42.80', date: 'Today', status: 'Spent' },
+    { detail: 'Salary reserve', category: 'Savings', amount: 'रु 350.00', date: 'Today', status: 'Saved' },
+    { detail: 'Notebook set', category: 'Stationery', amount: 'रु 18.25', date: 'Yesterday', status: 'Spent' },
 ];
 
 export default function Welcome() {
@@ -57,7 +58,7 @@ export default function Welcome() {
             </div>
 
             <main className="min-h-screen bg-[#f7f7f2] text-[#17201b] pt-24 lg:pt-28">
-                <nav className="fixed inset-x-0 top-0 z-30 mx-auto flex max-w-[1700px] items-center justify-between px-6 py-5 lg:px-8 bg-[#1c2721] backdrop-blur-xl text-white rounded-b-[20px] shadow-2xl shadow-black/10">
+                <nav className="fixed inset-x-0 top-0 z-30 mx-auto flex max-w-[1700px] items-center justify-between px-6 py-5 lg:px-8 bg-[#1c2721] backdrop-blur-xl text-white rounded-b-[20px] shadow-xl shadow-[#17201b]/45">
                         {/* logo */}
                         <Link href={route('home')} className=" h-full w-[110px]">
                             <img src={TraceItLogo} alt="logo" />
@@ -103,16 +104,16 @@ export default function Welcome() {
                         {/* left side */}
                         <div className="mx-auto flex max-w-2xl flex-col items-start gap-10 lg:mx-0">
 
-                            <div className="w-full">
+                            <div className="w-full" id="title-container">
                                 <div className="mb-5 inline-flex items-center gap-2 rounded-md border border-[#d6dbc8] bg-white/75 px-3 py-2 text-sm font-medium text-[#1d4f36] shadow-sm backdrop-blur">
                                     <ShieldCheck className="size-4" />
-                                    Inventory and expiry tracking for shops, cafes, and homes
+                                    Personal savings and spending tracking for everyday money
                                 </div>
                                 <h1 className="max-w-3xl text-5xl leading-[0.95] font-semibold tracking-tight text-[#142019] sm:text-6xl lg:text-8xl">
                                     TraceIt
                                 </h1>
                                 <p className="mt-6 w-full text-lg leading-7 text-[#465149]">
-                                    Know what is running low, what expires first, and what needs attention before money quietly disappears from the shelf.
+                                    Record daily expenses and savings, then see where your money goes across days, weeks, months, and years.
                                 </p>
 
                                 <div className="mt-8 flex flex-wrap gap-3">
@@ -137,30 +138,30 @@ export default function Welcome() {
                                 <div className="rounded-lg border border-white/70 bg-white/84 p-4 shadow-2xl shadow-[#17201b]/15 backdrop-blur-md">
                                     <div className="grid gap-3 sm:grid-cols-3">
                                         <div className="rounded-md bg-[#f0f6ef] p-4">
-                                            <BarChart3 className="mb-3 size-5 text-[#1d4f36]" />
-                                            <p className="text-2xl font-semibold">22</p>
-                                            <p className="text-sm text-[#5b665d]">active batches</p>
-                                        </div>
-                                        <div className="rounded-md bg-[#fff1f1] p-4">
-                                            <AlertTriangle className="mb-3 size-5 text-[#d8212c]" />
-                                            <p className="text-2xl font-semibold text-[#b91520]">4</p>
-                                            <p className="text-sm text-[#755054]">low stock</p>
+                                            <PiggyBank className="mb-3 size-5 text-[#1d4f36]" />
+                                            <p className="text-2xl font-semibold">रु 1.2k</p>
+                                            <p className="text-sm text-[#5b665d]">saved this month</p>
                                         </div>
                                         <div className="rounded-md bg-[#fff8df] p-4">
-                                            <CalendarClock className="mb-3 size-5 text-[#997000]" />
-                                            <p className="text-2xl font-semibold">6</p>
-                                            <p className="text-sm text-[#675d3c]">expiring soon</p>
+                                            <ReceiptText className="mb-3 size-5 text-[#997000]" />
+                                            <p className="text-2xl font-semibold text-[#6f5100]">रु 286</p>
+                                            <p className="text-sm text-[#675d3c]">spent this week</p>
+                                        </div>
+                                        <div className="rounded-md bg-[#eef7ff] p-4">
+                                            <TrendingUp className="mb-3 size-5 text-[#315f9f]" />
+                                            <p className="text-2xl font-semibold">रु 914</p>
+                                            <p className="text-sm text-[#4d5e72]">net balance</p>
                                         </div>
                                     </div>
 
                                     <div className="mt-4 overflow-hidden rounded-md border border-[#e1e4d8] bg-white">
                                         {demoRows.map((row) => (
-                                            <div key={row.batch} className="grid grid-cols-[1fr_auto] gap-3 border-b border-[#edf0e7] p-4 last:border-b-0 sm:grid-cols-[1.2fr_0.9fr_0.5fr_0.7fr_0.7fr]">
-                                                <p className="font-medium">{row.item}</p>
-                                                <p className="hidden text-[#5b665d] sm:block">{row.batch}</p>
-                                                <p className="text-right font-semibold sm:text-left">{row.qty}</p>
-                                                <p className="hidden text-[#5b665d] sm:block">{row.expiry}</p>
-                                                <p className={row.status === 'Low stock' ? 'font-semibold text-[#d8212c]' : 'text-[#1d4f36]'}>
+                                            <div key={`${row.detail}-${row.date}`} className="grid grid-cols-[1fr_auto] gap-3 border-b border-[#edf0e7] p-4 last:border-b-0 sm:grid-cols-[1.2fr_0.9fr_0.7fr_0.7fr_0.7fr]">
+                                                <p className="font-medium">{row.detail}</p>
+                                                <p className="hidden text-[#5b665d] sm:block">{row.category}</p>
+                                                <p className="text-right font-semibold sm:text-left">{row.amount}</p>
+                                                <p className="hidden text-[#5b665d] sm:block">{row.date}</p>
+                                                <p className={row.status === 'Spent' ? 'font-semibold text-[#c87900]' : 'text-[#1d4f36]'}>
                                                     {row.status}
                                                 </p>
                                             </div>
@@ -171,7 +172,7 @@ export default function Welcome() {
                         </div>
 
                         {/* Right Side */}
-                        <div className="flex flex-col w-full gap-4 lg:h-full">
+                        <div className="flex flex-col w-full gap-4 lg:h-full" id="image-container">
                             <section
                                 className="sm:hidden flex h-[50px] w-full items-center justify-center rounded-lg bg-[#f7f7f2] shadow-xl shadow-[#17201b]/10 border border-[#17201b]/5"
                             >
@@ -191,10 +192,10 @@ export default function Welcome() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#07110d]/85 via-transparent to-transparent" />
                                 <div className="absolute inset-x-0 bottom-0">
                                     <div className="w-full rounded-2xl bg-black/20 p-5 shadow-lg shadow-black/20 backdrop-blur-sm">
-                                        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/90">Inventory pulse</p>
-                                        <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-3xl">Keep every item visible, fresh, and ready to sell.</h2>
+                                        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/90">Money pulse</p>
+                                        <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-3xl">Keep savings growing and spending visible.</h2>
                                         <p className="mt-3 mb-3 text-sm leading-6 text-white/75">
-                                            See stock levels, expirations, and batch status at a glance—from one polished dashboard.
+                                            See daily records, category totals, and long-term trends from one polished dashboard.
                                         </p>
                                     </div>
                                 </div>
@@ -205,8 +206,8 @@ export default function Welcome() {
 
                 <section id="features" data-scroll-reveal className="relative z-20 opacity-0 translate-y-6 transition-all duration-700 ease-out mx-auto w-[1600px] px-6 py-16 lg:px-8 -mt-16 lg:-mt-20">
                     <div className="mx-auto max-w-4xl text-center">
-                        <p className="text-sm uppercase tracking-[0.24em] text-[#1d4f36]/80">Built for smarter stock control</p>
-                        <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[#142019] sm:text-4xl">Everything your team needs to reduce waste and keep shelves stocked.</h2>
+                        <p className="text-sm uppercase tracking-[0.24em] text-[#1d4f36]/80">Built for personal money clarity</p>
+                        <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[#142019] sm:text-4xl">Everything you need to understand savings and spendings.</h2>
                     </div>
 
                     <div className="mt-12 grid gap-6 md:grid-cols-3">
@@ -214,19 +215,19 @@ export default function Welcome() {
                             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eff9ef] text-[#1c4d33]">
                                 <BarChart3 className="size-5" />
                             </div>
-                            <h3 className="mt-5 text-xl font-semibold text-[#142019]">Clear inventory insights</h3>
+                            <h3 className="mt-5 text-xl font-semibold text-[#142019]">Clear money insights</h3>
                             <p className="mt-3 text-sm leading-6 text-[#5b665d]">
-                                Track stock movement, identify slow items, and know which batches need attention before they expire.
+                                Track savings and expenses by category so everyday decisions are easier to understand.
                             </p>
                         </div>
 
                         <div data-scroll-reveal className="opacity-0 translate-y-6 transition-all duration-2000 ease-out rounded-[28px] border border-[#e7eadc] bg-white p-7 shadow-sm">
                             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff5e2] text-[#8f6a02]">
-                                <CalendarClock className="size-5" />
+                                <ReceiptText className="size-5" />
                             </div>
-                            <h3 className="mt-5 text-xl font-semibold text-[#142019]">Expiry-aware alerts</h3>
+                            <h3 className="mt-5 text-xl font-semibold text-[#142019]">Daily expense records</h3>
                             <p className="mt-3 text-sm leading-6 text-[#5b665d]">
-                                Receive timely warnings for items that are about to expire, so you can reprioritize stock and reduce losses.
+                                Log grocery, stationery, transport, and other spending with details that stay easy to edit.
                             </p>
                         </div>
 
@@ -234,9 +235,9 @@ export default function Welcome() {
                             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e7f4ff] text-[#1d4f36]">
                                 <CheckCircle2 className="size-5" />
                             </div>
-                            <h3 className="mt-5 text-xl font-semibold text-[#142019]">Simple team workflows</h3>
+                            <h3 className="mt-5 text-xl font-semibold text-[#142019]">Simple saving workflows</h3>
                             <p className="mt-3 text-sm leading-6 text-[#5b665d]">
-                                Help staff know what to use first, what to reorder, and how inventory performance is improving over time.
+                                Capture income, deposits, gifts, or planned savings and compare them against spendings over time.
                             </p>
                         </div>
                     </div>
@@ -246,22 +247,22 @@ export default function Welcome() {
                     <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
                         <div className="rounded-[30px] border border-[#dfe2d5] bg-white p-10 shadow-sm">
                             <span className="inline-flex rounded-full bg-[#e8f4e8] px-4 py-2 text-sm font-semibold text-[#1d4f36]">How it works</span>
-                            <h2 className="mt-6 text-3xl font-semibold tracking-tight text-[#142019] sm:text-4xl">Track, prioritize, and replenish with confidence.</h2>
+                            <h2 className="mt-6 text-3xl font-semibold tracking-tight text-[#142019] sm:text-4xl">Track, compare, and plan with confidence.</h2>
                             <p className="mt-5 text-base leading-7 text-[#465149]">
-                                Use TraceIt to capture batch details, monitor expiry windows, and route alerts to the people who need to act first.
+                                Use TraceIt to capture daily money details, monitor trends, and keep savings goals in view.
                             </p>
                             <div className="mt-10 space-y-6">
                                 <div className="rounded-3xl border border-[#e7eadc] bg-[#f8faf6] p-6">
-                                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1d4f36]/80">1. Add stock quickly</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#5b665d]">Log new batches with quantity, expiry date, and location so every item is visible from the start.</p>
+                                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1d4f36]/80">1. Add savings quickly</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#5b665d]">Log income, deposits, and saved amounts with category, amount, date, and notes.</p>
                                 </div>
                                 <div className="rounded-3xl border border-[#e7eadc] bg-[#fff9ec] p-6">
-                                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8f6a02]/80">2. Watch expiry windows</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#5b665d]">Get fast alerts when products approach their expiry so you can act before waste occurs.</p>
+                                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8f6a02]/80">2. Record spendings</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#5b665d]">Track grocery, stationery, bills, transport, and other expenses as they happen.</p>
                                 </div>
                                 <div className="rounded-3xl border border-[#e7eadc] bg-[#eef7ff] p-6">
-                                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1d4f36]/80">3. Keep stock balanced</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#5b665d]">Reorder the right items at the right time, reduce overstock, and keep sales moving.</p>
+                                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1d4f36]/80">3. Review trends</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#5b665d]">Compare your day, week, month, and year to understand your net balance.</p>
                                 </div>
                             </div>
                         </div>
@@ -269,13 +270,13 @@ export default function Welcome() {
                         <div className="grid grid-cols-2 gap-6">
                             <div className="rounded-[30px] bg-[#1d4f36] p-8 text-white shadow-lg shadow-[#17201b]/10">
                                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#b7d8b1]">Save more</p>
-                                <h3 className="mt-4 text-2xl font-semibold">Cut waste with smarter expiry alerts.</h3>
-                                <p className="mt-3 text-sm leading-6 text-[#d2e9c8]">Shift inventory before it ages out and keep your stock turning faster.</p>
+                                <h3 className="mt-4 text-2xl font-semibold">Build stronger saving habits.</h3>
+                                <p className="mt-3 text-sm leading-6 text-[#d2e9c8]">See the gap between what you save and what you spend before it gets blurry.</p>
                             </div>
                             <div className="rounded-[30px] bg-[#f3f7f0] p-8 text-[#142019] shadow-lg shadow-[#17201b]/5">
                                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#4f6f55]">Stay organized</p>
-                                <h3 className="mt-4 text-2xl font-semibold">Give your team a single source of truth.</h3>
-                                <p className="mt-3 text-sm leading-6 text-[#465149]">Shift from sticky notes and guesswork to an actionable inventory process.</p>
+                                <h3 className="mt-4 text-2xl font-semibold">Give your money a single source of truth.</h3>
+                                <p className="mt-3 text-sm leading-6 text-[#465149]">Shift from scattered notes and guesses to a focused personal money process.</p>
                             </div>
                         </div>
                     </div>
@@ -319,12 +320,12 @@ export default function Welcome() {
                     </div>
                 </section>
 
-                <footer id="contact" className="border-t border-[#dfe2d5] bg-[#eef1e8] text-[#17201b]">
+                <footer id="About" className="border-t border-[#dfe2d5] bg-[#eef1e8] text-[#17201b]">
                     <div className="mx-auto flex flex-col gap-10 px-6 py-14 lg:flex-row lg:items-start lg:justify-between lg:px-8">
                         <div className="max-w-xl">
-                            <Link href={route('home')} className="inline-flex items-center gap-3 text-lg font-semibold text-[#142019]">
+                            <a href="#About" className="inline-flex items-center gap-3 text-lg font-semibold text-[#142019]">
                                 <img src={TraceItLogoColor} width="25%" alt="TraceIt Logo" />
-                            </Link>
+                            </a>
                             <p className="mt-5 max-w-lg text-sm leading-6 text-[#465149]">
                                 An inventory and expiry tracking tool crafted to help shops, cafés, and kitchens keep stock lean, fresh, and profitable.
                             </p>
@@ -344,7 +345,7 @@ export default function Welcome() {
                                 <ul className="mt-5 space-y-3 text-sm">
                                     <li><a href="#preview" className="transition hover:text-[#1d4f36]">Workflow preview</a></li>
                                     <li><a href="#features" className="transition hover:text-[#1d4f36]">Benefits</a></li>
-                                    <li><a href="#contact" className="transition hover:text-[#1d4f36]">Contact</a></li>
+                                    <li><a href="#About" className="transition hover:text-[#1d4f36]">About</a></li>
                                 </ul>
                             </div>
 

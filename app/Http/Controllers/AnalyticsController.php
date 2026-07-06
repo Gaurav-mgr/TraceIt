@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InventoryBatch;
-use App\Models\InventoryItem;
-use Illuminate\Http\RedirectResponse;
+use App\Models\MoneyRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,160 +13,120 @@ class AnalyticsController extends Controller
 {
     public function index(Request $request): Response
     {
-        $today = Carbon::today();
-        $soon = $today->copy()->addDays(14);
-
-        $items = $request->user()
-            ->inventoryItems()
-            ->with(['batches' => fn ($query) => $query->orderBy('expires_at')->orderBy('id')])
-            ->orderBy('name')
+        $records = $request->user()
+            ->moneyRecords()
+            ->orderBy('recorded_at')
             ->get();
 
-        $rows = $items->flatMap(function (InventoryItem $item) use ($today, $soon) {
-            return $item->batches->map(function (InventoryBatch $batch) use ($item, $today, $soon) {
-                $totalQuantity = $item->total_quantity;
-
-                return [
-                    'item_id' => $item->id,
-                    'batch_id' => $batch->id,
-                    'name' => $item->name,
-                    'category' => $item->category ?? '',
-                    'unit' => $item->unit,
-                    'low_stock_threshold' => $item->low_stock_threshold,
-                    'batch_code' => $batch->batch_code ?? '',
-                    'quantity' => $batch->quantity,
-                    'received_at' => $batch->received_at?->toDateString() ?? '',
-                    'expires_at' => $batch->expires_at->toDateString(),
-                    'total_quantity' => $totalQuantity,
-                    'is_low_stock' => $totalQuantity <= $item->low_stock_threshold,
-                    'expiry_status' => $batch->expires_at->lt($today)
-                        ? 'expired'
-                        : ($batch->expires_at->lte($soon) ? 'soon' : 'fresh'),
-                ];
-            });
-        })->values();
-        // Prepare line chart data: aggregate total quantity by received date (YYYY-MM-DD)
-        $lineChartData = $rows
-            ->groupBy(fn($row) => $row['received_at'] ?? $row['expires_at'])
-            ->map(fn($group, $date) => [
-                $date,
-                $group->sum('quantity'),
+        $chartData = collect(['day', 'week', 'month', 'year'])
+            ->mapWithKeys(fn (string $timeframe) => [
+                $timeframe => [
+                    'line' => $this->lineChartData($records, $timeframe),
+                    'pie' => $this->pieChartData($records, $timeframe),
+                ],
             ])
-            ->sortBy(0)
-            ->values()
-            ->prepend(['Date', 'Quantity'])
             ->toArray();
 
-        // Prepare pie chart data: distribution of total quantity by category
-        $pieChartData = $rows
-            ->groupBy('category')
-            ->map(fn($group, $category) => [
-                $category ?: 'Uncategorized',
-                $group->sum('quantity'),
-            ])
-            ->values()
-            ->prepend(['Category', 'Quantity'])
-            ->toArray();
+        $totalSavings = (float) $records->where('type', MoneyRecord::TYPE_SAVING)->sum('amount');
+        $totalSpendings = (float) $records->where('type', MoneyRecord::TYPE_SPENDING)->sum('amount');
 
         return Inertia::render('dashboard', [
-            'inventoryRows' => $rows,
-            'lineChartData' => $lineChartData,
-            'pieChartData' => $pieChartData,
+            'chartData' => $chartData,
             'summary' => [
-                'items' => $items->count(),
-                'batches' => $rows->count(),
-                'lowStock' => $items->filter(fn (InventoryItem $item) => $item->total_quantity <= $item->low_stock_threshold)->count(),
-                'expiringSoon' => $rows->where('expiry_status', 'soon')->count(),
-                'expired' => $rows->where('expiry_status', 'expired')->count(),
+                'savings' => $totalSavings,
+                'spendings' => $totalSpendings,
+                'balance' => $totalSavings - $totalSpendings,
+                'entries' => $records->count(),
+                'todaySavings' => (float) $records
+                    ->filter(fn (MoneyRecord $record) => $record->type === MoneyRecord::TYPE_SAVING && $record->recorded_at->isToday())
+                    ->sum('amount'),
+                'todaySpendings' => (float) $records
+                    ->filter(fn (MoneyRecord $record) => $record->type === MoneyRecord::TYPE_SPENDING && $record->recorded_at->isToday())
+                    ->sum('amount'),
             ],
         ]);
     }
 
-    public function bulkUpdate(Request $request): RedirectResponse
+    /**
+     * @param  Collection<int, MoneyRecord>  $records
+     * @return array<int, array<int, float|string>>
+     */
+    private function lineChartData(Collection $records, string $timeframe): array
     {
-        $validated = $request->validate([
-            'rows' => ['required', 'array', 'min:1'],
-            'rows.*.item_id' => ['nullable', 'integer'],
-            'rows.*.batch_id' => ['nullable', 'integer'],
-            'rows.*.name' => ['required', 'string', 'max:255'],
-            'rows.*.category' => ['nullable', 'string', 'max:255'],
-            'rows.*.unit' => ['required', 'string', 'max:50'],
-            'rows.*.low_stock_threshold' => ['required', 'integer', 'min:0', 'max:1000000'],
-            'rows.*.batch_code' => ['nullable', 'string', 'max:255'],
-            'rows.*.quantity' => ['required', 'integer', 'min:0', 'max:1000000'],
-            'rows.*.received_at' => ['nullable', 'date'],
-            'rows.*.expires_at' => ['required', 'date'],
-        ]);
+        $filtered = $this->recordsForTimeframe($records, $timeframe);
+        $rows = $filtered
+            ->groupBy(fn (MoneyRecord $record) => $this->bucketLabel($record->recorded_at, $timeframe))
+            ->map(fn (Collection $group, string $label) => [
+                $label,
+                (float) $group->where('type', MoneyRecord::TYPE_SAVING)->sum('amount'),
+                (float) $group->where('type', MoneyRecord::TYPE_SPENDING)->sum('amount'),
+                (float) $group->where('type', MoneyRecord::TYPE_SAVING)->sum('amount')
+                    - (float) $group->where('type', MoneyRecord::TYPE_SPENDING)->sum('amount'),
+            ])
+            ->values();
 
-        DB::transaction(function () use ($request, $validated) {
-            foreach ($validated['rows'] as $row) {
-                $item = $this->resolveItem($request, $row);
+        if ($rows->isEmpty()) {
+            $rows->push([$this->emptyLabel($timeframe), 0, 0, 0]);
+        }
 
-                $item->fill([
-                    'name' => trim($row['name']),
-                    'category' => filled($row['category'] ?? null) ? trim($row['category']) : null,
-                    'unit' => trim($row['unit']),
-                    'low_stock_threshold' => $row['low_stock_threshold'],
-                ])->save();
-
-                $batch = $this->resolveBatch($item, $row);
-
-                $batch->fill([
-                    'batch_code' => filled($row['batch_code'] ?? null) ? trim($row['batch_code']) : null,
-                    'quantity' => $row['quantity'],
-                    'received_at' => $row['received_at'] ?? null,
-                    'expires_at' => $row['expires_at'],
-                ])->save();
-            }
-        });
-
-        return back()->with('status', 'Inventory saved.');
+        return $rows->prepend(['Period', 'Savings', 'Spendings', 'Net'])->toArray();
     }
 
     /**
-     * @param  array<string, mixed>  $row
+     * @param  Collection<int, MoneyRecord>  $records
+     * @return array<int, array<int, float|string>>
      */
-    private function resolveItem(Request $request, array $row): InventoryItem
+    private function pieChartData(Collection $records, string $timeframe): array
     {
-        if (! empty($row['item_id'])) {
-            $item = $request->user()
-                ->inventoryItems()
-                ->whereKey($row['item_id'])
-                ->first();
+        $filtered = $this->recordsForTimeframe($records, $timeframe);
+        $savings = (float) $filtered->where('type', MoneyRecord::TYPE_SAVING)->sum('amount');
+        $spendings = (float) $filtered->where('type', MoneyRecord::TYPE_SPENDING)->sum('amount');
 
-            if (! $item) {
-                throw ValidationException::withMessages([
-                    'rows' => 'One or more inventory rows could not be found.',
-                ]);
-            }
-
-            return $item;
-        }
-
-        return $request->user()->inventoryItems()->firstOrNew([
-            'name' => trim((string) $row['name']),
-        ]);
+        return [
+            ['Type', 'Amount'],
+            ['Savings', $savings],
+            ['Spendings', $spendings],
+        ];
     }
 
     /**
-     * @param  array<string, mixed>  $row
+     * @param  Collection<int, MoneyRecord>  $records
+     * @return Collection<int, MoneyRecord>
      */
-    private function resolveBatch(InventoryItem $item, array $row): InventoryBatch
+    private function recordsForTimeframe(Collection $records, string $timeframe): Collection
     {
-        if (! empty($row['batch_id'])) {
-            $batch = $item->batches()
-                ->whereKey($row['batch_id'])
-                ->first();
+        $now = Carbon::today();
 
-            if (! $batch) {
-                throw ValidationException::withMessages([
-                    'rows' => 'One or more inventory batches could not be found.',
-                ]);
-            }
+        [$start, $end] = match ($timeframe) {
+            'day' => [$now->copy()->startOfDay(), $now->copy()->endOfDay()],
+            'week' => [$now->copy()->startOfWeek(), $now->copy()->endOfWeek()],
+            'month' => [$now->copy()->startOfMonth(), $now->copy()->endOfMonth()],
+            'year' => [$now->copy()->startOfYear(), $now->copy()->endOfYear()],
+            default => [$now->copy()->startOfDay(), $now->copy()->endOfDay()],
+        };
 
-            return $batch;
-        }
+        return $records->filter(fn (MoneyRecord $record) => $record->recorded_at->betweenIncluded($start, $end))->values();
+    }
 
-        return $item->batches()->make();
+    private function bucketLabel(Carbon $date, string $timeframe): string
+    {
+        return match ($timeframe) {
+            'day' => $date->format('M j'),
+            'week' => $date->format('D, M j'),
+            'month' => $date->format('M j'),
+            'year' => $date->format('M'),
+            default => $date->toDateString(),
+        };
+    }
+
+    private function emptyLabel(string $timeframe): string
+    {
+        return match ($timeframe) {
+            'day' => today()->format('M j'),
+            'week' => 'This week',
+            'month' => today()->format('M Y'),
+            'year' => today()->format('Y'),
+            default => 'No records',
+        };
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\MoneyRecordController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -11,8 +11,9 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [AnalyticsController::class, 'index'])->name('dashboard');
-    Route::get('inventory', [InventoryController::class, 'index'])->name('inventory');
-    Route::post('inventory/bulk-update', [InventoryController::class, 'bulkUpdate'])->name('inventory.bulk-update');
+    Route::get('savings', [MoneyRecordController::class, 'index'])->defaults('type', 'saving')->name('savings');
+    Route::get('spendings', [MoneyRecordController::class, 'index'])->defaults('type', 'spending')->name('spendings');
+    Route::post('money/{type}/bulk-update', [MoneyRecordController::class, 'bulkUpdate'])->name('money.bulk-update');
 });
 
 require __DIR__.'/settings.php';

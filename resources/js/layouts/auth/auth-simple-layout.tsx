@@ -1,7 +1,7 @@
-import AppLogoIcon from '@/components/app-logo-icon';
 import { Link } from '@inertiajs/react';
 
 import BgImage from '../../../../public/loginimage.png';
+import TraceItLogoColor from "../../../../public/traceitLogoColor.png";
 
 
 interface AuthLayoutProps {
@@ -15,15 +15,12 @@ export default function AuthSimpleLayout({ children, title, description }: AuthL
     return (
         <div className="bg-background flex w-full max-w-[1100px] flex-col items-stretch justify-center gap-6 rounded-lg shadow-2xl shadow-[#17201b]/15 backdrop-blur-md p-6 md:p-10 md:flex-row">
             {/* left side - login form */}
-            <div className="flex w-full flex-col items-center justify-center gap-6 rounded-[28px] bg-white/90 p-6 md:w-1/2 md:p-10">
+            <div id="login-container" className="flex w-full flex-col items-center justify-center gap-6 rounded-[28px] bg-white/90 p-6 md:w-1/2 md:p-10">
                 <div className="w-full max-w-sm">
                     <div className="flex flex-col gap-13">
-                        <div className="flex flex-col items-center gap-4">
-                            <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium">
-                                <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md">
-                                    <AppLogoIcon className="size-9 fill-current text-[var(--foreground)] dark:text-white" />
-                                </div>
-                                <span className="sr-only">{title}</span>
+                        <div className="flex flex-col items-center gap-5">
+                            <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium w-[110px]">
+                                <img src={TraceItLogoColor} alt="TraceIt logo" />
                             </Link>
 
                             <div className="space-y-2 text-center">
