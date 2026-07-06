@@ -6,27 +6,27 @@
   <p>TraceIt is a full-stack web application built with Laravel, React, and Inertia to help users monitor savings, spending, dashboards, and inventory-related workflows in a polished, modern experience.</p>
 </div>
 
-## 🌟 Overview
+## Overview
 
 TraceIt brings together a clean user experience and a robust backend so people and small teams can:
 
-- 💰 track savings and spendings with clear records
-- 📊 view analytics for day, week, month, and year perspectives
-- 🧾 manage bulk entries quickly without a clunky spreadsheet
-- 📦 work with inventory-related data models and workflows for stock awareness
+- track savings and spendings with clear records
+- view analytics for day, week, month, and year perspectives
+- manage bulk entries quickly without a clunky spreadsheet
+- work with inventory-related data models and workflows for stock awareness
 
 The application is designed to feel fast, responsive, and practical for real-world personal finance and operational tracking.
 
-## ✨ Key Features
+## Key Features
 
-- 📈 Dashboard analytics with line and pie charts
-- 💸 Savings and spending record management
-- 🧠 Summary cards for balance, totals, categories, and today's activity
-- 🔐 Authentication, profile, and settings flows
-- ⚡ Fast frontend experience with React + Inertia
-- 🧱 Inventory domain structure for stock and batch-oriented use cases
+- Dashboard analytics with line and pie charts
+- Savings and spending record management
+- Summary cards for balance, totals, categories, and today's activity
+- Authentication, profile, and settings flows
+- Fast frontend experience with React + Inertia
+- Inventory domain structure for stock and batch-oriented use cases
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology | Why it fits |
 |---|---|---|
@@ -81,7 +81,7 @@ Or start the Laravel server separately:
 php artisan serve
 ```
 
-## 💡 Example Code Snippets
+## Example Code Snippets
 
 ### Laravel controller example
 
@@ -115,19 +115,19 @@ return (
 );
 ```
 
-## 🌍 Why This Stack Works in the Real World
+## Why This Stack Works in the Real World
 
 This stack is a strong fit for practical applications because it balances speed, reliability, and developer productivity:
 
-- 🛡️ Laravel offers a secure backend foundation with built-in authentication, validation, and ORM support
-- ⚛️ React makes complex UIs interactive and maintainable
-- 🔗 Inertia removes the friction of building a separate API for every screen
-- 🎨 Tailwind makes it easy to ship polished, responsive UI quickly
-- ⚙️ Vite keeps development and deployment efficient for modern web teams
+- Laravel offers a secure backend foundation with built-in authentication, validation, and ORM support
+- React makes complex UIs interactive and maintainable
+- Inertia removes the friction of building a separate API for every screen
+- Tailwind makes it easy to ship polished, responsive UI quickly
+- Vite keeps development and deployment efficient for modern web teams
 
 For small businesses, personal finance tools, and internal productivity apps, this combination is dependable and scalable without becoming overly complex.
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 app/               # Laravel controllers, models, middleware
@@ -137,10 +137,10 @@ database/          # Migrations and seeders
 public/            # Static assets and logos
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome. If you would like to improve TraceIt, please open an issue or submit a pull request with a clear description of the change.
 
-## 📄 License
+## License
 
 This project is open-source and available under the MIT license.
