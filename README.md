@@ -37,7 +37,7 @@ The application is designed to feel fast, responsive, and practical for real-wor
 | Testing | Pest | Modern, expressive testing for Laravel apps |
 | Auth & Routing | Laravel Breeze-style flows + Ziggy | Smooth authentication and route handling across the app |
 
-## 🧩 Architecture at a Glance
+## Architecture at a Glance
 
 TraceIt follows a modern web-app architecture:
 
@@ -48,7 +48,7 @@ TraceIt follows a modern web-app architecture:
 
 This approach is especially useful in real-world products because it reduces complexity while keeping the app feel fast and maintainable.
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
