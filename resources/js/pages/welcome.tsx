@@ -25,26 +25,9 @@ const demoRows = [
 
 export default function Welcome() {
     const { auth } = usePage<SharedProps>().props;
-    const dashboardHref = auth.user ? route('dashboard') : route('login');
+    const dashboardHref = auth.user ? route('dashboard') : route('register');
 
-    useEffect(() => {
-        const elements = Array.from(document.querySelectorAll('[data-scroll-reveal]'));
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('opacity-100', 'translate-y-0');
-                        entry.target.classList.remove('opacity-0', 'translate-y-6');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { threshold: 0.2 }
-        );
-
-        elements.forEach((el) => observer.observe(el));
-        return () => observer.disconnect();
-    }, []);
+    
 
     return (
         <>
@@ -204,14 +187,14 @@ export default function Welcome() {
                     </div>
                 </section>
 
-                <section id="features" data-scroll-reveal className="relative z-20 opacity-0 translate-y-6 transition-all duration-700 ease-out mx-auto w-[1600px] px-6 py-16 lg:px-8 -mt-16 lg:-mt-20">
+                <section id="features" className="relative z-20 translate-y-6 transition-all duration-700 ease-out mx-auto w-[1600px] px-6 py-16 lg:px-8 -mt-16 lg:-mt-20">
                     <div className="mx-auto max-w-4xl text-center">
                         <p className="text-sm uppercase tracking-[0.24em] text-[#1d4f36]/80">Built for personal money clarity</p>
-                        <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[#142019] sm:text-4xl">Everything you need to understand savings and spendings.</h2>
+                        <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[#1d4f36] sm:text-4xl">Everything you need to understand savings and spendings.</h2>
                     </div>
 
                     <div className="mt-12 grid gap-6 md:grid-cols-3">
-                        <div data-scroll-reveal className="opacity-0 translate-y-6 transition-all duration-2000 ease-out rounded-[28px] border border-[#e7eadc] bg-white p-7 shadow-sm">
+                        <div className=" translate-y-6 transition-all duration-2000 ease-out rounded-[28px] border border-[#e7eadc] bg-white p-7 shadow-sm">
                             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eff9ef] text-[#1c4d33]">
                                 <BarChart3 className="size-5" />
                             </div>
@@ -221,7 +204,7 @@ export default function Welcome() {
                             </p>
                         </div>
 
-                        <div data-scroll-reveal className="opacity-0 translate-y-6 transition-all duration-2000 ease-out rounded-[28px] border border-[#e7eadc] bg-white p-7 shadow-sm">
+                        <div className=" translate-y-6 transition-all duration-2000 ease-out rounded-[28px] border border-[#e7eadc] bg-white p-7 shadow-sm">
                             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff5e2] text-[#8f6a02]">
                                 <ReceiptText className="size-5" />
                             </div>
@@ -231,7 +214,7 @@ export default function Welcome() {
                             </p>
                         </div>
 
-                        <div data-scroll-reveal className="opacity-0 translate-y-6 transition-all duration-700 ease-out rounded-[28px] border border-[#e7eadc] bg-white p-7 shadow-sm">
+                        <div className=" translate-y-6 transition-all duration-700 ease-out rounded-[28px] border border-[#e7eadc] bg-white p-7 shadow-sm">
                             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e7f4ff] text-[#1d4f36]">
                                 <CheckCircle2 className="size-5" />
                             </div>
@@ -243,7 +226,7 @@ export default function Welcome() {
                     </div>
                 </section>
 
-                <section data-scroll-reveal className="relative z-20 opacity-0 translate-y-6 transition-all duration-2000 ease-out mx-auto w-[1600px] px-6 py-16 lg:px-8 -mt-12 lg:-mt-16">
+                <section id="workflow" className="relative z-20  translate-y-6 transition-all duration-2000 ease-out mx-auto w-[1600px] px-6 py-16 lg:px-8 -mt-12 lg:-mt-16">
                     <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
                         <div className="rounded-[30px] border border-[#dfe2d5] bg-white p-10 shadow-sm">
                             <span className="inline-flex rounded-full bg-[#e8f4e8] px-4 py-2 text-sm font-semibold text-[#1d4f36]">How it works</span>
@@ -252,15 +235,15 @@ export default function Welcome() {
                                 Use TraceIt to capture daily money details, monitor trends, and keep savings goals in view.
                             </p>
                             <div className="mt-10 space-y-6">
-                                <div className="rounded-3xl border border-[#e7eadc] bg-[#f8faf6] p-6">
+                                <div id="workflowList" className="rounded-3xl border border-[#e7eadc] bg-[#f8faf6] p-6">
                                     <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1d4f36]/80">1. Add savings quickly</p>
                                     <p className="mt-2 text-sm leading-6 text-[#5b665d]">Log income, deposits, and saved amounts with category, amount, date, and notes.</p>
                                 </div>
-                                <div className="rounded-3xl border border-[#e7eadc] bg-[#fff9ec] p-6">
+                                <div id="workflowList" className="rounded-3xl border border-[#e7eadc] bg-[#fff9ec] p-6">
                                     <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8f6a02]/80">2. Record spendings</p>
                                     <p className="mt-2 text-sm leading-6 text-[#5b665d]">Track grocery, stationery, bills, transport, and other expenses as they happen.</p>
                                 </div>
-                                <div className="rounded-3xl border border-[#e7eadc] bg-[#eef7ff] p-6">
+                                <div id="workflowList" className="rounded-3xl border border-[#e7eadc] bg-[#eef7ff] p-6">
                                     <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1d4f36]/80">3. Review trends</p>
                                     <p className="mt-2 text-sm leading-6 text-[#5b665d]">Compare your day, week, month, and year to understand your net balance.</p>
                                 </div>
@@ -282,13 +265,13 @@ export default function Welcome() {
                     </div>
                 </section>
 
-                <section data-scroll-reveal className="relative z-20 opacity-0 translate-y-6 transition-all duration-2000 ease-out mx-auto w-[1600px] px-6 py-16 lg:px-8 -mt-12 lg:-mt-16">
-                    <div className="rounded-[30px] border border-[#dfe2d5] bg-[#f7f7f2] p-10 shadow-sm">
+                <section id="workflow2" className="relative z-20 translate-y-6 transition-all duration-2000 ease-out mx-auto w-[1600px] px-6 py-16 lg:px-8 -mt-12 lg:-mt-16">
+                    <div className="rounded-[30px] border border-[#dfe2d5] bg-[#1d4f36] p-10 shadow-sm">
                         <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
                             <div>
                                 <span className="inline-flex rounded-full bg-[#d5eed4] px-4 py-2 text-sm font-semibold text-[#1d4f36]">Trusted workflow</span>
-                                <h2 className="mt-6 text-3xl font-semibold tracking-tight text-[#142019] sm:text-4xl">Designed for retail, cafés, and home kitchens.</h2>
-                                <p className="mt-5 text-base leading-7 text-[#465149]">
+                                <h2 className="mt-6 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Designed for retail, cafés, and home kitchens.</h2>
+                                <p className="mt-5 text-base leading-7 text-white/50">
                                     TraceIt helps every kind of stock manager see what’s on hand, what’s expiring, and what to reorder—without complex spreadsheets.
                                 </p>
                                 <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -306,7 +289,7 @@ export default function Welcome() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="rounded-[30px] bg-[#e2f1e3] p-8 text-[#142019] shadow-lg shadow-[#17201b]/10">
+                            <div className="rounded-[30px] bg-white p-8 text-[#142019] shadow-lg shadow-[#17201b]/10">
                                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1d4f36]/80">Easy setup</p>
                                 <h3 className="mt-4 text-2xl font-semibold">Get started without a steep learning curve.</h3>
                                 <p className="mt-3 text-sm leading-6 text-[#425147]">A streamlined onboarding flow means your team can begin logging stock and receiving alerts in just a few minutes.</p>

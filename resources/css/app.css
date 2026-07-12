@@ -237,6 +237,10 @@
     }
 }
 
+body {
+    overflow-x: hidden;
+}
+
 /* welcome animations */
 #image-container {
     animation: leftslide 2.72s forwards;
@@ -288,7 +292,7 @@
 
 /* login animation */
 
-#login-container {
+/* #login-container {
     animation: logleftslide 1.65s forwards;
 }
 
@@ -301,5 +305,95 @@
     to {
         transform: translateX(0);
         opacity: 1;
+    }
+} */
+
+#features {
+    animation: scrolling linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+}
+
+@keyframes scrolling {
+    0% {
+        opacity: 0;
+        filter: blur(12px);
+    }
+
+    100% {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+
+#workflow {
+    animation: scrollingrightfadein linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 20%;
+}
+
+@keyframes scrollingrightfadein {
+    0% {
+        opacity: 0;
+        transform: translateY(50%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#workflow2 {
+    animation: scrollingleftfadein linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 20%;
+}
+
+@keyframes scrollingleftfadein {
+    0% {
+        opacity: 0;
+        transform: translateY(50%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+#login-container {
+    animation: fadedown 1.2s ease-in-out forwards;
+}
+
+#login-signup-image {
+    animation: blurin 1.2s ease-in-out forwards;
+}
+
+@keyframes fadedown {
+    from {
+        transform: translateX(100%);
+        content-visibility: hidden;
+    }
+
+    to {
+        transform: translateX(0);
+        content-visibility: visible;
+    }
+}
+
+
+
+@keyframes goup {
+    0% {
+        opacity: 0;
+        transform: translateY(20%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
